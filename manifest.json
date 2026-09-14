@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "mafiauniverse-helper",
+  "version": "0.1.0",
+  "description": "Automatically saves an open MafiaUniverse game every 5 minutes.",
+  "permissions": [
+    "alarms",
+    "scripting",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "https://mafiauniverse.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
