@@ -1,0 +1,5 @@
+/* Visually mark players who cannot be added to the current vote. */
+input.GamePlayers_Player_Name.text-muted.text-decoration-line-through,
+[id^="AddOnVote_"].text-muted.text-decoration-line-through {
+  cursor: not-allowed;
+}

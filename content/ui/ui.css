@@ -1,0 +1,34 @@
+/* Hide the whole column containing the score coefficient field. */
+.col-md-5.col-xl-3:has(#ScoreCoefficient) {
+  display: none !important;
+}
+
+/* Hide the season or league link in the game metadata. */
+#gameForm .row.mt-1.pb-2 > .col-12.col-md-7.col-xl-3.d-inline-block {
+  display: none !important;
+}
+
+/* Hide the current voting table until its body contains voting rows. */
+#TableOfCurrentVoting:not(:has(tbody > tr)) {
+  display: none !important;
+}
+
+/* Hide the site footer. */
+.mu-ui-footer {
+  display: none !important;
+}
+
+/* Hide the whole site navigation while editing a game. */
+#MainNav {
+  display: none !important;
+}
+
+/* Hide Yandex RTB ads whose final ID suffix is dynamic. */
+div[id^="yandex_rtb_"] {
+  display: none !important;
+}
+
+/* Give the game note more vertical space. */
+#Note {
+  min-height: 150px;
+}

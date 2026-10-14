@@ -1,0 +1,41 @@
+/* Keep the site table as the data source and display a formatted copy. */
+#Votings {
+  display: none !important;
+}
+
+#FormattedVotings th,
+#FormattedVotings td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#FormattedVotings {
+  width: 100%;
+}
+
+#FormattedVotings table {
+  font-size: 14px !important;
+  margin: 0 auto;
+  table-layout: fixed;
+  width: min(100%, 850px) !important;
+}
+
+#FormattedVotings .voting-label-column {
+  width: 160px !important;
+}
+
+#FormattedVotings .voting-data-row > th {
+  white-space: nowrap;
+}
+
+/* Mark players who stayed after a repeated tie. */
+#FormattedVotings .stayed-player {
+  background-color: rgba(74, 222, 128, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(74, 222, 128, 0.65);
+}
+
+/* Mark players who left after a vote. */
+#FormattedVotings .departed-player {
+  background-color: rgba(251, 113, 133, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(251, 113, 133, 0.65);
+}

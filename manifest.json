@@ -13,6 +13,21 @@
     "https://mafiauniverse.org/*"
   ],
   "background": {
-    "service_worker": "background.js"
-  }
+    "service_worker": "background/auto-save.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mafiauniverse.org/Games/Edit*"],
+      "css": [
+        "content/ui/ui.css",
+        "content/game-players/game-players.css",
+        "content/votings/votings.css"
+      ],
+      "js": [
+        "content/ui/ui.js",
+        "content/game-players/game-players.js",
+        "content/votings/votings.js"
+      ]
+    }
+  ]
 }

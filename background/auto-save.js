@@ -8,19 +8,26 @@ let ensureAlarmPromise;
 const reloadingGameTabIds = new Set();
 
 function ensureAutoSaveAlarm() {
-  const isEnsuringAlarm = ensureAlarmPromise !== undefined;
+  const isAlarmSetupInProgress = ensureAlarmPromise !== undefined;
 
-  if (isEnsuringAlarm) {
+  if (isAlarmSetupInProgress) {
     return ensureAlarmPromise;
   }
 
   ensureAlarmPromise = chrome.alarms
     .get(AUTO_SAVE_ALARM)
     .then(async (alarm) => {
-      const alarmAlreadyExists = alarm !== undefined;
+      const hasExpectedAutoSavePeriod =
+        alarm?.periodInMinutes === AUTO_SAVE_INTERVAL_MINUTES;
 
-      if (alarmAlreadyExists) {
+      if (hasExpectedAutoSavePeriod) {
         return;
+      }
+
+      const hasOutdatedAutoSaveAlarm = alarm !== undefined;
+
+      if (hasOutdatedAutoSaveAlarm) {
+        await chrome.alarms.clear(AUTO_SAVE_ALARM);
       }
 
       await chrome.alarms.create(AUTO_SAVE_ALARM, {
@@ -49,6 +56,16 @@ async function autoSaveTab(tab) {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: () => {
+        const gameEndedCheckbox = document.getElementById("Ended");
+        const shouldMarkGameAsEnded =
+          gameEndedCheckbox instanceof HTMLInputElement &&
+          gameEndedCheckbox.type === "checkbox" &&
+          !gameEndedCheckbox.checked;
+
+        if (shouldMarkGameAsEnded) {
+          gameEndedCheckbox.click();
+        }
+
         const button = document.getElementById("SaveGameButton");
         const saveButtonIsMissing = button === null;
 
@@ -57,10 +74,6 @@ async function autoSaveTab(tab) {
           return;
         }
 
-        console.log(
-          "[mafiauniverse-helper] Auto-save requested",
-          new Date().toISOString(),
-        );
         button.click();
       },
     });
@@ -98,10 +111,18 @@ chrome.webNavigation.onCommitted.addListener((details) => {
   const isGameEditPage = details.url.startsWith(GAME_EDIT_URL);
   const shouldAutoSaveAfterReload =
     isMainFrame && isPageReloaded && isGameEditPage;
+  const shouldForgetPendingReload =
+    isMainFrame && !shouldAutoSaveAfterReload;
 
   if (shouldAutoSaveAfterReload) {
     reloadingGameTabIds.add(details.tabId);
+  } else if (shouldForgetPendingReload) {
+    reloadingGameTabIds.delete(details.tabId);
   }
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  reloadingGameTabIds.delete(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
